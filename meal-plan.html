@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eating Plan</title>
+<style>
+  :root{
+    --bg:#15140f;
+    --panel:#1e1c16;
+    --line:#33301f;
+    --chalk:#f0ead8;
+    --dim:#a39d84;
+    --accent:#e8641c;
+    --accent2:#8fae4d;
+    --font-display:'Oswald',Impact,'Arial Narrow',sans-serif;
+    --font-body:Georgia,'Times New Roman',serif;
+    --font-mono:'Courier New',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--chalk);
+    font-family:var(--font-body);
+    padding-bottom:60px;
+  }
+  header{
+    padding:28px 20px 18px;
+    border-bottom:3px solid var(--accent2);
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 8px),
+      var(--panel);
+  }
+  header h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    font-size:clamp(28px,7vw,44px);
+    margin:0;
+    color:var(--chalk);
+  }
+  header p{
+    margin:6px 0 0;
+    color:var(--dim);
+    font-size:14px;
+    font-style:italic;
+  }
+  .cross-link{
+    display:inline-block;
+    margin-top:12px;
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--accent2);
+    text-decoration:none;
+    border:1px solid var(--accent2);
+    padding:6px 10px;
+    border-radius:4px;
+  }
+  .cross-link:active{ background:var(--accent2); color:var(--bg); }
+  nav{
+    display:flex;
+    overflow-x:auto;
+    gap:2px;
+    background:var(--panel);
+    border-bottom:1px solid var(--line);
+    -webkit-overflow-scrolling:touch;
+  }
+  nav button{
+    flex:0 0 auto;
+    background:none;
+    border:none;
+    color:var(--dim);
+    font-family:var(--font-display);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    font-size:13px;
+    padding:14px 16px;
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    white-space:nowrap;
+  }
+  nav button.active{
+    color:var(--accent2);
+    border-bottom:3px solid var(--accent2);
+  }
+  main{
+    max-width:640px;
+    margin:0 auto;
+    padding:20px 16px;
+  }
+  .tab{ display:none; }
+  .tab.active{ display:block; }
+  .group-title{
+    font-family:var(--font-display);
+    text-transform:uppercase;
+    color:var(--accent2);
+    font-size:12px;
+    letter-spacing:2px;
+    margin:26px 0 10px;
+    padding-bottom:6px;
+    border-bottom:1px solid var(--line);
+  }
+  .group-title:first-child{ margin-top:0; }
+  .item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:10px 4px;
+    border-bottom:1px solid var(--line);
+  }
+  .item-name{ font-size:15px; color:var(--chalk); }
+  .item-tag{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--dim);
+    white-space:nowrap;
+  }
+  .meal{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:14px 16px;
+    margin-bottom:14px;
+  }
+  .meal-name{
+    font-family:var(--font-display);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    font-size:15px;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+  .meal-desc{ font-size:14px; color:var(--chalk); line-height:1.5; }
+  .meal-desc b{ color:var(--accent2); }
+  .note{
+    margin-top:22px;
+    padding:14px;
+    background:var(--panel);
+    border-left:3px solid var(--accent2);
+    font-size:13px;
+    color:var(--dim);
+    line-height:1.5;
+  }
+  .note b{ color:var(--chalk); }
+  .check{
+    width:16px;height:16px;
+    border:2px solid var(--dim);
+    border-radius:3px;
+    flex:0 0 auto;
+    cursor:pointer;
+    margin-right:10px;
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  .check.checked{ background:var(--accent2); border-color:var(--accent2); }
+  .check.checked::after{ content:'✓'; color:#15140f; font-size:11px; font-weight:bold; }
+  .item-left{ display:flex; align-items:center; }
+  footer{
+    text-align:center;
+    color:var(--dim);
+    font-size:11px;
+    padding:30px 16px 10px;
+    font-family:var(--font-mono);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Eating Board</h1>
+  <p>Protein · fiber · slow carbs · vegetables — cheap &amp; simple</p>
+  <a href="workout-plan.html" class="cross-link">🏋 Training Board →</a>
+</header>
+
+<nav id="tabs"></nav>
+<main id="tabContent"></main>
+<footer>Rotate freely within each list — no strict recipes, just building blocks.</footer>
+
+<script>
+const data = [
+  {
+    id:'templates', label:'Meals',
+    render: () => {
+      const meals = [
+        ['Breakfast', 'Eggs (3-4) + oats or a piece of fruit. Add spinach or peppers to the eggs if you have them.'],
+        ['Lunch', 'Chicken thigh or canned tuna + rice or lentils + a big handful of any vegetable.'],
+        ['Dinner', 'Ground turkey or beef + sweet potato or beans + roasted or steamed vegetable.'],
+        ['Snack', 'Greek yogurt, cottage cheese, or a handful of nuts + a piece of fruit.'],
+      ];
+      let html = `<div class="group-title">Simple Daily Template</div>`;
+      meals.forEach(([name, desc]) => {
+        html += `<div class="meal"><div class="meal-name">${name}</div><div class="meal-desc">${desc}</div></div>`;
+      });
+      html += `<div class="note"><b>Idea:</b> Every meal is really just "1 protein + 1 slow carb + 1 vegetable." Once you've got the lists memorized, you don't need a recipe — just combine and season.</div>`;
+      return html;
+    }
+  },
+  {
+    id:'protein', label:'Protein',
+    render: () => {
+      const items = [
+        ['Eggs', 'cheapest protein there is'],
+        ['Chicken thighs', 'cheaper than breast, harder to dry out'],
+        ['Ground turkey or beef (85/15)', 'versatile, freezes well'],
+        ['Canned tuna or salmon', 'no cooking needed'],
+        ['Greek yogurt (plain)', 'protein + probiotic'],
+        ['Cottage cheese', 'high protein, low effort'],
+        ['Canned or dried beans/lentils', 'protein + fiber combo'],
+        ['Tofu or tempeh', 'cheap plant option'],
+      ];
+      let html = `<div class="group-title">Protein Sources</div>`;
+      items.forEach(([name, tag]) => {
+        html += `<div class="item"><div class="item-name">${name}</div><div class="item-tag">${tag}</div></div>`;
+      });
+      return html;
+    }
+  },
+  {
+    id:'carbs', label:'Slow Carbs',
+    render: () => {
+      const items = [
+        ['Rolled oats', 'buy in bulk, keeps months'],
+        ['Brown rice', 'cheap staple, freezes well'],
+        ['Sweet potatoes', 'fiber + slow carb in one'],
+        ['Lentils', 'also counts as protein'],
+        ['Quinoa', 'pricier but complete protein'],
+        ['Whole wheat pasta', 'in moderation'],
+        ['Barley', 'cheap, high fiber'],
+      ];
+      let html = `<div class="group-title">Slow-Digesting Carbs</div>`;
+      items.forEach(([name, tag]) => {
+        html += `<div class="item"><div class="item-name">${name}</div><div class="item-tag">${tag}</div></div>`;
+      });
+      return html;
+    }
+  },
+  {
+    id:'veg', label:'Vegetables & Fiber',
+    render: () => {
+      const items = [
+        ['Frozen mixed vegetables', 'cheapest, no waste, steam in bag'],
+        ['Broccoli', 'roasts well, holds up in fridge'],
+        ['Spinach', 'cooks down, easy to add to anything'],
+        ['Carrots', 'cheap, long shelf life'],
+        ['Cabbage', 'very cheap, lasts weeks'],
+        ['Bell peppers', 'raw or cooked'],
+        ['Frozen berries', 'fiber + fits any budget'],
+        ['Apples/bananas', 'cheap fiber snack'],
+      ];
+      let html = `<div class="group-title">Vegetables &amp; Fiber</div>`;
+      items.forEach(([name, tag]) => {
+        html += `<div class="item"><div class="item-name">${name}</div><div class="item-tag">${tag}</div></div>`;
+      });
+      return html;
+    }
+  },
+  {
+    id:'list', label:'Grocery List',
+    render: () => {
+      const groups = [
+        ['Protein', ['Eggs (2 dozen)','Chicken thighs','Ground turkey/beef','Canned tuna','Greek yogurt','Canned beans']],
+        ['Carbs', ['Rolled oats','Brown rice','Sweet potatoes','Lentils']],
+        ['Vegetables', ['Frozen mixed veg','Broccoli','Spinach','Carrots','Frozen berries']],
+        ['Pantry basics', ['Olive oil','Salt/pepper/garlic powder','Hot sauce or salsa (flavor, low cost)']],
+      ];
+      let html = '';
+      groups.forEach(([heading, items]) => {
+        html += `<div class="group-title">${heading}</div>`;
+        items.forEach(name => {
+          html += `<div class="item"><div class="item-left"><div class="check"></div><div class="item-name">${name}</div></div></div>`;
+        });
+      });
+      return html;
+    }
+  },
+];
+
+const tabsEl = document.getElementById('tabs');
+const contentEl = document.getElementById('tabContent');
+
+data.forEach((tab, i) => {
+  const btn = document.createElement('button');
+  btn.textContent = tab.label;
+  btn.className = i===0 ? 'active' : '';
+  btn.dataset.tab = tab.id;
+  btn.onclick = () => selectTab(tab.id);
+  tabsEl.appendChild(btn);
+
+  const section = document.createElement('section');
+  section.className = 'tab' + (i===0 ? ' active' : '');
+  section.id = tab.id;
+  section.innerHTML = tab.render();
+  contentEl.appendChild(section);
+});
+
+document.querySelectorAll('.check').forEach(box => {
+  box.onclick = () => box.classList.toggle('checked');
+});
+
+function selectTab(id){
+  document.querySelectorAll('.tab').forEach(d => d.classList.toggle('active', d.id===id));
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.tab===id));
+}
+</script>
+
+</body>
+</html>

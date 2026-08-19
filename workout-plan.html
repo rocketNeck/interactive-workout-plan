@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5-Day Training Plan</title>
+<style>
+  :root{
+    --bg:#15140f;
+    --panel:#1e1c16;
+    --line:#33301f;
+    --chalk:#f0ead8;
+    --dim:#a39d84;
+    --accent:#e8641c;
+    --accent2:#8fae4d;
+    --accent3:#5b9bd5;
+    --font-display:'Oswald',Impact,'Arial Narrow',sans-serif;
+    --font-body:Georgia,'Times New Roman',serif;
+    --font-mono:'Courier New',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--chalk);
+    font-family:var(--font-body);
+    padding-bottom:60px;
+  }
+  header{
+    padding:28px 20px 18px;
+    border-bottom:3px solid var(--accent);
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 8px),
+      var(--panel);
+  }
+  header h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    font-size:clamp(28px,7vw,44px);
+    margin:0;
+    color:var(--chalk);
+  }
+  header p{
+    margin:6px 0 0;
+    color:var(--dim);
+    font-size:14px;
+    font-style:italic;
+  }
+  .cross-link{
+    display:inline-block;
+    margin-top:12px;
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--accent);
+    text-decoration:none;
+    border:1px solid var(--accent);
+    padding:6px 10px;
+    border-radius:4px;
+  }
+  .cross-link:active{ background:var(--accent); color:var(--bg); }
+  nav{
+    display:flex;
+    overflow-x:auto;
+    gap:2px;
+    background:var(--panel);
+    border-bottom:1px solid var(--line);
+    -webkit-overflow-scrolling:touch;
+  }
+  nav button{
+    flex:0 0 auto;
+    background:none;
+    border:none;
+    color:var(--dim);
+    font-family:var(--font-display);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    font-size:13px;
+    padding:14px 16px;
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    white-space:nowrap;
+  }
+  nav button.active{
+    color:var(--accent);
+    border-bottom:3px solid var(--accent);
+  }
+  main{
+    max-width:640px;
+    margin:0 auto;
+    padding:20px 16px;
+  }
+  .day{ display:none; }
+  .day.active{ display:block; }
+  .section-title{
+    font-family:var(--font-display);
+    text-transform:uppercase;
+    color:var(--accent);
+    font-size:12px;
+    letter-spacing:2px;
+    margin:26px 0 10px;
+    padding-bottom:6px;
+    border-bottom:1px solid var(--line);
+  }
+  .section-title:first-child{ margin-top:0; }
+  .section-title.cardio{ color:var(--accent3); }
+  .section-title.stretch{ color:var(--accent2); }
+  .divider{
+    margin:28px 0 6px;
+    border:none;
+    border-top:2px dashed var(--line);
+  }
+  .ex{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:11px 4px;
+    border-bottom:1px solid var(--line);
+  }
+  .ex.done .ex-name{ color:var(--dim); text-decoration:line-through; }
+  .ex-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex:1;
+    min-width:0;
+  }
+  .ex-check{
+    width:18px;height:18px;
+    border:2px solid var(--dim);
+    border-radius:3px;
+    flex:0 0 auto;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .ex-check.checked{
+    background:var(--accent2);
+    border-color:var(--accent2);
+  }
+  .ex-check.checked::after{
+    content:'✓';
+    color:#15140f;
+    font-size:13px;
+    font-weight:bold;
+  }
+  .ex-text{ min-width:0; }
+  .ex-name{
+    font-family:var(--font-body);
+    font-size:15px;
+    color:var(--chalk);
+  }
+  .ex-sets{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--dim);
+  }
+  .ex-link{
+    flex:0 0 auto;
+    color:var(--accent);
+    text-decoration:none;
+    font-size:11px;
+    font-family:var(--font-mono);
+    border:1px solid var(--accent);
+    padding:5px 8px;
+    border-radius:4px;
+    white-space:nowrap;
+  }
+  .ex-link:active{ background:var(--accent); color:var(--bg); }
+  .note{
+    margin-top:22px;
+    padding:14px;
+    background:var(--panel);
+    border-left:3px solid var(--accent2);
+    font-size:13px;
+    color:var(--dim);
+    line-height:1.5;
+  }
+  .note b{ color:var(--chalk); }
+  footer{
+    text-align:center;
+    color:var(--dim);
+    font-size:11px;
+    padding:30px 16px 10px;
+    font-family:var(--font-mono);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Training Board</h1>
+  <p>5-day split · chest, shoulders &amp; arms · fat loss · core · pelvic tilt correction</p>
+  <a href="meal-plan.html" class="cross-link">🍽 Eating Board →</a>
+</header>
+
+<nav id="tabs"></nav>
+
+<main id="days"></main>
+
+<footer>Tap any ▶ link to open a form-reference video search on YouTube.<br>Optional 20-min weekend mobility session (90/90 hip stretch, pigeon pose, world's greatest stretch, thread the needle, standing forward fold) — do it on an off day if you have time.</footer>
+
+<script>
+const YT = (q) => `https://www.youtube.com/results?search_query=${encodeURIComponent(q + ' exercise form')}`;
+
+// stretches that happen every single day, regardless of workout
+const DAILY_STRETCHES = [
+  ['Couch stretch (hip flexors)','60s/side'],
+  ['Kneeling hip flexor stretch','60s/side'],
+  ['Standing quad stretch','30s/side'],
+  ['Cat-cow','10 reps'],
+  ["Child's pose",'60s'],
+];
+
+const data = [
+  {
+    id:'d1', label:'Day 1', title:'Chest, Shoulders & Arms',
+    workout:[
+      ['Barbell or DB bench press','4x8-10'],
+      ['Incline DB press','3x10'],
+      ['Cable chest fly','3x12-15'],
+      ['Seated DB shoulder press','3x8-10'],
+      ['Lateral raises','3x12-15'],
+      ['Barbell curls','3x10'],
+      ['Overhead tricep extension','3x10-12'],
+    ],
+    cardio:[['Incline walk or stationary bike','20-25 min']],
+    stretch:[
+      ['Cross-body shoulder stretch','30s/side'],
+      ['Overhead tricep stretch','30s/side'],
+      ['Doorway chest stretch','45s'],
+      ['Wrist flexor/extensor stretch','20s each'],
+    ],
+    note:"Face pulls and rear delts double as posture work, which supports the pelvic tilt correction too."
+  },
+  {
+    id:'d2', label:'Day 2', title:'Core & Pelvic Correction',
+    workout:[
+      ['Glute bridges','3x15'],
+      ['Dead bugs','3x10/side'],
+      ['Plank','3x30-45s'],
+      ['Bird dogs','3x10/side'],
+      ['Cable Pallof press','3x12/side'],
+    ],
+    cardio:[['Incline walk','20 min']],
+    stretch:[
+      ['Cobra stretch','45s'],
+      ['Seated spinal twist','30s/side'],
+      ['Standing side bend','20s/side'],
+    ],
+    note:"Anterior pelvic tilt = tight hip flexors + weak glutes/abs. This day directly targets both."
+  },
+  {
+    id:'d3', label:'Day 3', title:'Legs (Glute-Focused)',
+    workout:[
+      ['Romanian deadlifts','4x10'],
+      ['Bulgarian split squats','3x10/leg'],
+      ['Glute bridge / hip thrust','3x12'],
+      ['Leg curls','3x12'],
+      ['Cable kickbacks','3x15/side'],
+    ],
+    cardio:[['Cardio finisher','15-20 min']],
+    stretch:[
+      ['Standing hamstring stretch','30s/side'],
+      ['Figure-4 glute stretch','45s/side'],
+      ['Butterfly stretch','45s'],
+      ['Calf stretch','30s/side'],
+    ],
+  },
+  {
+    id:'d4', label:'Day 4', title:'Chest, Shoulders & Arms (Volume)',
+    workout:[
+      ['Incline barbell or DB press','4x10'],
+      ['Flat DB press','3x10'],
+      ['Cable crossover','3x12-15'],
+      ['Arnold press','3x10'],
+      ['Cable lateral raises','3x15'],
+      ['Face pulls','3x15'],
+      ['Incline DB curls + skull crushers (superset)','3x10'],
+    ],
+    cardio:[['Incline walk or stationary bike','20-25 min']],
+    stretch:[
+      ['Cross-body shoulder stretch','30s/side'],
+      ['Overhead tricep stretch','30s/side'],
+      ['Doorway chest stretch','45s'],
+      ['Wrist flexor/extensor stretch','20s each'],
+    ],
+  },
+  {
+    id:'d5', label:'Day 5', title:'Core + Conditioning',
+    workout:[
+      ['Hanging leg raises','3x12'],
+      ['Cable woodchoppers','3x12/side'],
+      ['Side plank','3x30s/side'],
+    ],
+    cardio:[['Steady cardio or HIIT intervals','25-30 min']],
+    stretch:[
+      ['Cobra stretch','45s'],
+      ['Seated spinal twist','30s/side'],
+      ['Standing side bend','20s/side'],
+    ],
+    note:"The daily hip flexor + child's pose combo (below) is the one not to skip — consistency matters more than any single lift."
+  },
+];
+
+const tabsEl = document.getElementById('tabs');
+const daysEl = document.getElementById('days');
+
+function renderExercises(container, items){
+  items.forEach(([name, sets]) => {
+    const row = document.createElement('div');
+    row.className = 'ex';
+    row.innerHTML = `
+      <div class="ex-left">
+        <div class="ex-check"></div>
+        <div class="ex-text">
+          <div class="ex-name">${name}</div>
+          <div class="ex-sets">${sets}</div>
+        </div>
+      </div>
+      <a class="ex-link" href="${YT(name)}" target="_blank" rel="noopener">▶ WATCH</a>
+    `;
+    const check = row.querySelector('.ex-check');
+    check.onclick = () => {
+      check.classList.toggle('checked');
+      row.classList.toggle('done');
+    };
+    container.appendChild(row);
+  });
+}
+
+data.forEach((day, i) => {
+  const btn = document.createElement('button');
+  btn.textContent = day.label;
+  btn.className = i===0 ? 'active' : '';
+  btn.onclick = () => selectDay(day.id);
+  btn.dataset.tab = day.id;
+  tabsEl.appendChild(btn);
+
+  const section = document.createElement('section');
+  section.className = 'day' + (i===0 ? ' active' : '');
+  section.id = day.id;
+
+  // Workout
+  const wTitle = document.createElement('div');
+  wTitle.className = 'section-title';
+  wTitle.textContent = day.title;
+  section.appendChild(wTitle);
+  renderExercises(section, day.workout);
+
+  // Divider
+  section.appendChild(document.createElement('hr')).className = 'divider';
+
+  // Cardio
+  const cTitle = document.createElement('div');
+  cTitle.className = 'section-title cardio';
+  cTitle.textContent = 'Cardio';
+  section.appendChild(cTitle);
+  renderExercises(section, day.cardio);
+
+  // Stretch - today's focus
+  const sTitle = document.createElement('div');
+  sTitle.className = 'section-title stretch';
+  sTitle.textContent = "Stretch — Today's Focus";
+  section.appendChild(sTitle);
+  renderExercises(section, day.stretch);
+
+  // Stretch - daily (every day)
+  const dTitle = document.createElement('div');
+  dTitle.className = 'section-title stretch';
+  dTitle.textContent = 'Stretch — Every Day';
+  section.appendChild(dTitle);
+  renderExercises(section, DAILY_STRETCHES);
+
+  if(day.note){
+    const note = document.createElement('div');
+    note.className = 'note';
+    note.innerHTML = `<b>Note:</b> ${day.note}`;
+    section.appendChild(note);
+  }
+
+  daysEl.appendChild(section);
+});
+
+function selectDay(id){
+  document.querySelectorAll('.day').forEach(d => d.classList.toggle('active', d.id===id));
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.tab===id));
+}
+</script>
+
+</body>
+</html>
